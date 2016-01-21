@@ -28,7 +28,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 						<a href="#menu-toggle" class="btn btn-default" id="menu-toggle" style="margin-bottom:20px;">Nascondi Menu</a>
                         <h1>Inserimento nuovo esaminando</h1>
 <?php
-	$esami = $db->getEsamiProgettiSedi();
+	$esami = $db->getEsami();
 	$nesami = count($esami);
 	for($i=0;$i<$nesami;$i++){
 		$esami[$i]['dataInizio']=str_replace("-", "/", $esami[$i]['dataInizio']);

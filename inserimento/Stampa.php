@@ -17,8 +17,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 			$cf = $db->pulisciStringa($_POST['cf']);
             $DataNascita = $_POST['DataNascita'];
             $time = strtotime($DataNascita);
-
-           $newformat  = date('d/m/Y',$time);
+            $newformat  = date('d/m/Y',$time);
 
 			//$db->insert("nome, cognome, cf, DataNascita", "'".$nome."', '".$cognome."', '".$cf."' , '". $DataNascita . "'", "persona");
 			//$db->insert("cf, codiceEsame", "'".$cf."', ".$codesame[0], "persona_esame");
@@ -37,6 +36,10 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 ?>
 <html>
     <head>
+        <style>
+        @page{size: 210mm 297mm; margin: 30mm;}
+        </style>
+        <link rel="stylesheet" type="text/css" href="print.css" media="print">
     </head>
     <body>
         <table>
@@ -47,6 +50,6 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
             <tr><td>Progetto</td></tr>
             <tr><td>Data consegna:</td><td>Data presentazione esame orale</td></tr>
         </table>
-        <a href="index.php">Torna all'inserimento</a>
+        <a class=".invisibile" href="index.php">Torna all'inserimento</a>
     </body>
 </html>

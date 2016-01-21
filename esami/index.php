@@ -54,14 +54,14 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 		echo "<h4>- Esame Eliminato con Successo</h4>";
 	}
 	
-	$esami = $db->getEsami();
-	$nesami = count($esami);
-	for($i=0;$i<$nesami;$i++){
-		$esami[$i]['dataInizio']=str_replace("-", "/", $esami[$i]['dataInizio']);
-	}
-	
-	$progetti = $db->getProgetti();
-	$nprogetti = count($progetti);
+	 $esami = $db->getEsami();
+ $nesami = count($esami);
+ for($i=0;$i<$nesami;$i++){
+  $esami[$i]['dataInizio']=str_replace("-", "/", $esami[$i]['dataInizio']);
+ }
+ 
+ $progetti = $db->getSediProgettiNomi();
+ $nprogetti = count($progetti);
 ?>
                         <h3>Aggiungi Esame</h3>
 						<form class="form col-md-12 center-block" action="index.php" method="post">
@@ -70,7 +70,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 							  Progetto <select name="progetto" type="text" class="form-control input-lg">
 							  <?php
 								for($i=0;$i<$nprogetti;$i++){
-									echo "<option>[".$progetti[$i]['codice']."] ".$progetti[$i]['nome']."</option>";
+									echo "<option>[".$progetti[$i]['codiceProgetto']."] Cod.Sede[".$progetti[$i]['codiceSede']."] ".$progetti[$i]['nome']."</option>";
 								}
 							  ?>
 							  </select>
@@ -94,7 +94,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 							  Esame <select name="progetto" type="text" class="form-control input-lg">
 							  <?php
 								for($i=0;$i<$nesami;$i++){
-									echo "<option>[".$esami[$i]['codice']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
+								echo "<option>[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
 								}
 							  ?>
 							  </select>
@@ -118,7 +118,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 							  Esame <select name="progetto" type="text" class="form-control input-lg">
 							  <?php
 								for($i=0;$i<$nesami;$i++){
-									echo "<option>[".$esami[$i]['codice']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
+									echo "<option>[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
 								}
 							  ?>
 							  </select>

@@ -1,0 +1,9 @@
+            table {
+                page-break-inside: avoid;
+            }
+body{
+    background-color: aqua;
+}
+.invisibile{
+    display: none;
+}
