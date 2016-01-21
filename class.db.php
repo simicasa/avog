@@ -199,5 +199,12 @@ class database{
      public function getSediProgettiNomi(){
   return $this->getGeneric("SELECT * FROM {$this->tb_sedeprogetto} tsp JOIN {$this->tb_progetto} tp ON tsp.codiceProgetto=tp.codice");
  }
+    
+    public function getEsame($id){
+  $query = "SELECT tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp ON te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice WHERE te.codice={$id}";
+  $this->executeQuery($query);
+  return $this->fetchAssocStored();
+ }
+    
 }
 ?>

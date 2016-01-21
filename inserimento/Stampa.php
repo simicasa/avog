@@ -18,12 +18,12 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
             $DataNascita = $_POST['DataNascita'];
             $time = strtotime($DataNascita);
             $newformat  = date('d/m/Y',$time);
-
+ 
 			//$db->insert("nome, cognome, cf, DataNascita", "'".$nome."', '".$cognome."', '".$cf."' , '". $DataNascita . "'", "persona");
 			//$db->insert("cf, codiceEsame", "'".$cf."', ".$codesame[0], "persona_esame");
 			//$db->checkInserimento();
 			if($db->calcolaDataEsame($cf, $codesame[0])){
-				echo "<h4>- Inserimento avvenuto con Successo</h4>";
+				echo "<h4 class='no-print'>- Inserimento avvenuto con Successo</h4>";
 			}else{
 				echo "<h4>- Inserimento non avvenuto con Successo, errore nell'inseriemento, contattare un amministratore</h4>";
 			}
@@ -32,24 +32,30 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 		}
 	}
 	
-	
+	$esami = $db->getEsame($codesame[0]);
 ?>
 <html>
     <head>
         <style>
-        @page{size: 210mm 297mm; margin: 30mm;}
+            @page{size: 210mm 297mm; margin: 30mm;}
+            @media print
+            {    
+                .no-print, .no-print *
+                {
+                    display: none !important;
+                }
+}
         </style>
-        <link rel="stylesheet" type="text/css" href="print.css" media="print">
     </head>
     <body>
         <table>
             <tr><td>Loghi</td></tr>
             <tr><td>Cognome <?php echo strtoupper($cognome); ?></td><td>Nome <?php echo strtoupper($nome); ?></td></tr>
             <tr><td>Data di nascita <?php echo $newformat; ?></td><td>C.F.: <?php echo strtoupper($cf); ?></td></tr>
-            <tr><td>Sede di</td></tr>
-            <tr><td>Progetto</td></tr>
+            <tr><td>Sede di <?php echo $esami['tsnome']." [".$esami['tscodice']."]"; ?></td></tr>
+            <tr><td>Progetto <?php echo $esami['tpnome']." [".$esami['tpcodice']."]"; ?></td></tr>
             <tr><td>Data consegna:</td><td>Data presentazione esame orale</td></tr>
         </table>
-        <a class=".invisibile" href="index.php">Torna all'inserimento</a>
+        <a class="no-print" href="index.php">Torna all'inserimento</a>
     </body>
 </html>
