@@ -186,7 +186,7 @@ class database{
 				//if($this->isWeekend($giorni[$i]['dataInizio'])){date('Y-m-d', strtotime($day . " +7 days"));}
 				//if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('Y-m-d', strtotime($esame['dataInizio'] . " +2 days"));}
 				//else{ $dataInizio = $esame['dataInizio']; }
-				$queryCome="DATE_ADD('".$dataInizio."', INTERVAL 0 DAY)";
+				$queryCome="DATE_ADD('".$esame['dataInizio']."', INTERVAL 0 DAY)";
 				$quanti=0;
 			}else{
 				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
