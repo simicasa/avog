@@ -1,15 +1,7 @@
-            table {
-                page-break-inside: avoid;
-            }
-body{
-    background-color: aqua;
-}
-.invisibile{
-    display: none;
 @media print{
     @page {
         size: landscape;
-        margin: 20mm 60mm;
+        margin: 20mm 20mm;
     }
     .invisibile{
         display: none;

@@ -21,7 +21,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 				$db->insert("cf, personaID, codiceEsame, dataConsegna", "'".$cf."', ".$personaid.", ".$codesame.", STR_TO_DATE(DATE(NOW()), '%Y-%m-%d')", "persona_esame");
 				//$db->checkInserimento();
 				if($db->calcolaDataEsame($cf, $codesame)){
-					echo "<h4>- Inserimento avvenuto con Successo</h4>";
+					echo "<h4 class='invisibile'>- Inserimento avvenuto con Successo</h4>";
 				}else{
 					echo "<h4>- Inserimento non avvenuto con Successo, errore nell'inseriemento, contattare un amministratore</h4>";
 				}
@@ -56,7 +56,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
             </tr>
             <tr>
                 <td><img src='../stemmi/logo%20garanzia%20giovani_2_74x74.jpg'></td>
-                <td></td>
+                <td><img src='../stemmi/logo.jpg'></td>
                 <td><img src='../stemmi/servizio%20civile.jpg'></td>
             </tr>
             <tr>

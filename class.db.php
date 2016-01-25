@@ -27,10 +27,10 @@ class database{
 	
 	/* COSTRUTTORE E DISTRUTTORE */
 	public function __construct(){
-		$this->dbHost = "localhost";
-		$this->dbUser = "angelotm";
-		$this->dbPwd = "olegnatm";
-		$this->dbNome = "lavoro1";
+		$this->dbHost = "62.149.150.178";
+		$this->dbUser = "Sql935096";
+		$this->dbPwd = "eneaz3t7nm";
+		$this->dbNome = "Sql935096_1";
 		if(!($this->connetti())){ // NON CONNESSO
 			echo "<script type=\"text/javascript\">alert(\"Errore nella connessione al database, contattare un amministratore.\");</script>";
 		}
