@@ -184,18 +184,18 @@ class database{
 				$this->executeQuery($query);
 				$esame = $this->fetchAssocStored();
 				//if($this->isWeekend($giorni[$i]['dataInizio'])){date('Y-m-d', strtotime($day . " +7 days"));}
-				if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('Y-m-d', strtotime($esame['dataInizio'] . " +2 days"));}
-				else{ $dataInizio = $esame['dataInizio']; }
+				//if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('Y-m-d', strtotime($esame['dataInizio'] . " +2 days"));}
+				//else{ $dataInizio = $esame['dataInizio']; }
 				$queryCome="DATE_ADD('".$dataInizio."', INTERVAL 0 DAY)";
 				$quanti=0;
 			}else{
 				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
-				$dataInizio = date('Y-m-d', strtotime($giorni[$i]['dataInizio'] . " +2 days"));
+				//$dataInizio = date('Y-m-d', strtotime($giorni[$i]['dataInizio'] . " +2 days"));
 				if(!isset($giorni[$i]['quanti'])){
-					if($this->isWeekend(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"))){$j=$i+2;}
-					else{$j=$i;}
+					//if($this->isWeekend(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"))){$j=$i+2;}
+					//else{$j=$i;}
 					$i--;
-					$j--;
+					//$j--;
 					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".($j+1)." DAY)";
 					$quanti=0;
 				}else{
@@ -204,9 +204,9 @@ class database{
 				}
 			}
 			$this->update("dataEsame", $queryCome, $this->tb_personaesame, "cf='".$cf."' AND codiceEsame=".$codiceEsame);
-			$confronto=$quantiGiornalieri/2;
-			if(($quantiGiornalieri%2)!=0){$confronto--;}
-			if($quanti<$confronto){
+			//$confronto=$quantiGiornalieri/2;
+			//if(($quantiGiornalieri%2)!=0){$confronto--;}
+			if($quanti<$this->quantiEsaminandiMattina()){
 				$this->update("seMattina","1",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
 			}else{
 				$this->update("seMattina","0",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
@@ -231,6 +231,22 @@ class database{
 		$rows = $this->getNumRowsStored();
 		if($rows!=false){
 			return ($opzioni[0]['esaminandiGiornalieri']);
+		}
+		return (0);
+	}
+	public function quantiEsaminandiMattina(){
+		$opzioni = $this->getOpzioni();
+		$rows = $this->getNumRowsStored();
+		if($rows!=false){
+			return ($opzioni[0]['postiMattina']);
+		}
+		return (0);
+	}
+	public function quantiEsaminandiPomeriggio(){
+		$opzioni = $this->getOpzioni();
+		$rows = $this->getNumRowsStored();
+		if($rows!=false){
+			return ($opzioni[0]['postiPomeriggio']);
 		}
 		return (0);
 	}

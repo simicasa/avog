@@ -85,16 +85,16 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 							</div>
 							<div class="form-group"><br />Orario Mattina
 							<table style="width:100%;"><tr><td style="width:50%;">Ore
-							  <input name="orarioMattinaOre" type="text" class="form-control input-lg" value="<?php echo $orarioMattinaOre; ?>">
+							  <input name="orarioMattinaOre" type="number" min="0" max="23" class="form-control input-lg" value="<?php echo $orarioMattinaOre; ?>">
 							  </td><td>Minuti
-							  <input name="orarioMattinaMinuti" type="text" class="form-control input-lg" value="<?php echo $orarioMattinaMinuti; ?>">
+							  <input name="orarioMattinaMinuti" type="number" min="0" max="59" class="form-control input-lg" value="<?php echo $orarioMattinaMinuti; ?>">
 							  </td></tr></table><br />
 							</div>
 							<div class="form-group">Orario Pomeriggio<br />
 							<table style="width:100%;"><tr><td style="width:50%;">Ore
-							  <input name="orarioPomeriggioOre" type="text" class="form-control input-lg" value="<?php echo $orarioPomeriggioOre; ?>">
+							  <input name="orarioPomeriggioOre" type="number" min="0" max="23" class="form-control input-lg" value="<?php echo $orarioPomeriggioOre; ?>">
 							  </td><td>Minuti
-							  <input name="orarioPomeriggioMinuti" type="text" class="form-control input-lg" value="<?php echo $orarioPomeriggioMinuti; ?>">
+							  <input name="orarioPomeriggioMinuti" type="number" min="0" max="59" class="form-control input-lg" value="<?php echo $orarioPomeriggioMinuti; ?>">
 							  </td></tr></table>
 							</div>
 							<div class="form-group">
