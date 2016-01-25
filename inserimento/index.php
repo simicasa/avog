@@ -32,11 +32,21 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 	$nesami = count($esami);
 	for($i=0;$i<$nesami;$i++){
 		$esami[$i]['dataInizio']=str_replace("-", "/", $esami[$i]['dataInizio']);
+		$esami[$i]['dataInizio'] = strtotime($esami[$i]['dataInizio']);
+	}
+	$db->executeQuery("SELECT codiceEsame, COUNT(*) AS niscritti FROM {$db->tb_personaesame} GROUP BY codiceEsame");
+	$contoesami = $db->fetchAssocStored();
+	for($i=0;$i<count($contoesami);$i++){
+		$arrayContoEsami[intval($contoesami['codiceEsame'])] = $contoesami['niscritti'];
 	}
 ?>
                         <h3>Aggiungi Progetto</h3>
 						<form class="form col-md-12 center-block" action="Stampa.php" method="post">
 							<input name="insert" type="hidden">
+                            
+                            Protocollo<div class="form-group">
+							  <input name="protocollo" type="number" class="form-control input-lg" placeholder="Protocollo">
+							</div>
 							<!-- PERSONA -->
 							Persona<div class="form-group">
 							  <input name="nome" type="text" class="form-control input-lg" placeholder="Nome">
@@ -55,7 +65,9 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 							  Esame <select name="esame" type="text" class="form-control input-lg">
 							  <?php
 								for($i=0;$i<$nesami;$i++){
-echo "<option>[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
+echo "<option value='[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."]'>[Sede ".$esami[$i]['sedeNome']."] Progetto ".$esami[$i]['progettoNome']." [".date("d/m/Y",$esami[$i]['dataInizio'])."] [";
+if(!empty($arrayContoEsami[intval($esami[$i]['codice'])])){echo $arrayContoEsami[intval($esami[$i]['codice'])];}else{echo "0";}
+echo "/".$esami[$i]['limitePartecipanti']." Partecipanti]</option>";
 								}
 							  ?>
 							  </select>

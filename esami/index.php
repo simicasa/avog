@@ -31,8 +31,9 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 	if(isset($_POST['insert'])){
 		if(!empty($_POST['progetto']) && !empty($_POST['dataInizio']) && !empty($_POST['limitePartecipanti'])){
 			$project = explode("[", $db->pulisciStringa($_POST['progetto']));
+			$sede = explode("]", $project[2]);
 			$project = explode("]", $project[1]);
-			$db->insert("codiceProgetto, dataInizio, limitePartecipanti", "'".$project[0]."', STR_TO_DATE('".$db->pulisciStringa($_POST['dataInizio'])."', '%d/%m/%Y'), ".$db->pulisciStringa($_POST['limitePartecipanti']), "esame");
+			$db->insert("codiceProgetto, codiceSede, dataInizio, limitePartecipanti", "'".$project[0]."', '".$sede[0]."', STR_TO_DATE('".$db->pulisciStringa($_POST['dataInizio'])."', '%d/%m/%Y'), ".$db->pulisciStringa($_POST['limitePartecipanti']), "esame");
 			echo "<h4>- Esame Aggiunto con Successo</h4>";
 		}else{
 			echo "<h4>- Esame Non Aggiunto, riempire tutti i campi</h4>";
@@ -54,14 +55,14 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 		echo "<h4>- Esame Eliminato con Successo</h4>";
 	}
 	
-	 $esami = $db->getEsami();
- $nesami = count($esami);
- for($i=0;$i<$nesami;$i++){
-  $esami[$i]['dataInizio']=str_replace("-", "/", $esami[$i]['dataInizio']);
- }
- 
- $progetti = $db->getSediProgettiNomi();
- $nprogetti = count($progetti);
+	$esami = $db->getEsami();
+	$nesami = count($esami);
+	for($i=0;$i<$nesami;$i++){
+		$esami[$i]['dataInizio']=str_replace("-", "/", $esami[$i]['dataInizio']);
+	}
+	
+	$progetti = $db->getSediProgettiNomi();
+	$nprogetti = count($progetti);
 ?>
                         <h3>Aggiungi Esame</h3>
 						<form class="form col-md-12 center-block" action="index.php" method="post">
@@ -94,7 +95,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 							  Esame <select name="progetto" type="text" class="form-control input-lg">
 							  <?php
 								for($i=0;$i<$nesami;$i++){
-								echo "<option>[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
+									echo "<option>[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."] DataInizio ".$esami[$i]['dataInizio']." - Partecipanti ".$esami[$i]['limitePartecipanti']."</option>";
 								}
 							  ?>
 							  </select>

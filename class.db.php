@@ -27,10 +27,10 @@ class database{
 	
 	/* COSTRUTTORE E DISTRUTTORE */
 	public function __construct(){
-		$this->dbHost = "localhost";
-		$this->dbUser = "root";
-		$this->dbPwd = "";
-		$this->dbNome = "avog";
+		$this->dbHost = "62.149.150.178";
+		$this->dbUser = "Sql935096";
+		$this->dbPwd = "eneaz3t7nm";
+		$this->dbNome = "Sql935096_1";
 		if(!($this->connetti())){ // NON CONNESSO
 			echo "<script type=\"text/javascript\">alert(\"Errore nella connessione al database, contattare un amministratore.\");</script>";
 		}
@@ -67,15 +67,15 @@ class database{
 	
 	public function update($cosa, $come, $dove, $quando){
 		$this->executeQuery("UPDATE ".$dove." SET ".$cosa."=".$come." WHERE ".$quando);
-	//	echo "UPDATE ".$dove." SET ".$cosa."=".$come." WHERE ".$quando;
+		//echo "UPDATE ".$dove." SET ".$cosa."=".$come." WHERE ".$quando;
 	}
 	public function insert($dove, $valori, $tabella){
 		$this->executeQuery("INSERT INTO ".$tabella." (".$dove.") VALUES (".$valori.")");
-	//	echo "INSERT INTO ".$tabella." (".$dove.") VALUES (".$valori.")";
+		//echo "INSERT INTO ".$tabella." (".$dove.") VALUES (".$valori.")";
 	}
 	public function delete($tabella, $quando){
 		$this->executeQuery("DELETE FROM ".$tabella." WHERE (".$quando.")");
-//		echo "DELETE FROM ".$tabella." WHERE (".$quando.")";
+		//echo "DELETE FROM ".$tabella." WHERE (".$quando.")";
 	}
 	
 	/* FETCH */
@@ -91,7 +91,7 @@ class database{
 	public function getNumFieldsStored(){return (mysql_num_fields($this->lastResult));}
 	
 	/* GET FROM DATABASE */
-	private $orderby = "ORDER BY nome ASC, codice ASC";
+	private $orderby = "ORDER BY codice ASC , nome ASC";
 	public function getGeneric($query){
 		$this->executeQuery($query);
 		$rows = $this->getNumRowsStored();
@@ -118,19 +118,40 @@ class database{
 		return $this->getGeneric("SELECT * FROM {$this->tb_sedeprogetto}");
 	}
 	public function getEsami(){
-		return $this->getGeneric("SELECT * FROM {$this->tb_esame} ORDER BY codice ASC");
+		return $this->getGeneric("SELECT te.codice AS codice, te.codiceSede AS codiceSede, te.codiceProgetto AS codiceProgetto, te.dataInizio AS dataInizio, te.limitePartecipanti AS limitePartecipanti, ts.nome AS sedeNome, tp.nome AS progettoNome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp ON te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice ORDER BY te.codice ASC");
+	}
+	public function getEsame($id){
+		$query = "SELECT te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp ON te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice WHERE te.codice={$id}";
+		$this->executeQuery($query);
+		return $this->fetchAssocStored();
+	}
+	public function getEsamePersona($id, $cf){
+		$query = "SELECT tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe ON te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.cf='{$cf}' AND tpe.codiceEsame={$id} WHERE te.codice={$id}";
+		$this->executeQuery($query);
+		return $this->fetchAssocStored();
+	}
+	public function getEsamePersonaByID($id, $idPersona){
+		$query = "SELECT tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON tpe.cf=tpp.cf AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.codiceEsame={$id} WHERE te.codice={$id} AND tpp.id={$idPersona}";
+		$this->executeQuery($query);
+		return $this->fetchAssocStored();
+	}
+	public function getPersonaIdFromCf($cf){
+		$query = "SELECT * FROM {$this->tb_persona} WHERE cf='{$cf}'";
+		$this->executeQuery($query);
+		return $this->fetchAssocStored();
 	}
 	public function getPersone(){
-		return $this->getGeneric("SELECT * FROM {$this->tb_persona} ");
+		return $this->getGeneric("SELECT * FROM {$this->tb_persona}");
 	}
 	public function getPersoneEsami(){
-		return $this->getGeneric("SELECT * FROM {$this->tb_personaesame} ");
+		return $this->getGeneric("SELECT * FROM {$this->tb_personaesame}");
 	}
 	public function getOpzioni(){
-		return $this->getGeneric("SELECT * FROM {$this->tb_opzioni} ");
+		return $this->getGeneric("SELECT * FROM {$this->tb_opzioni}");
 	}
 	public function getPrenotazioni(){
-		return $this->getGeneric("SELECT * FROM {$this->tb_personaesame} ");
+		$query = "SELECT tpp.cf AS cf, tpp.nome AS nome, tpp.cognome AS cognome, tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, tpe.dataEsame AS dataEsame, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON tpe.codiceEsame=te.codice AND tpe.personaID=tpp.id AND tpe.cf=tpp.cf AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice";
+		return $this->getGeneric($query);
 	}
 	
 	public function checkInserimento($tabella, $quando){
@@ -151,22 +172,37 @@ class database{
 				$giorni[$i] = $this->fetchAssocStored();
 			}
 			$i=0;
+			$quantiGiornalieri = $this->quantiEsaminandiGiornalieri();
 			if($rows==0){
 				$query = "SELECT dataInizio FROM ".$this->tb_esame." WHERE codice=".$codiceEsame;
 				$this->executeQuery($query);
 				$esame = $this->fetchAssocStored();
 				$queryCome="DATE_ADD('".$esame['dataInizio']."', INTERVAL 0 DAY)";
+				$quanti=0;
 			}else{
-				$quantiGiornalieri = $this->quantiEsaminandiGiornalieri();
 				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
 				if(!isset($giorni[$i]['quanti'])){
 					$i--;
 					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".($i+1)." DAY)";
+					$quanti=0;
 				}else{
 					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".$i." DAY)";
+					$quanti=$giorni[$i]['quanti'];
 				}
 			}
 			$this->update("dataEsame", $queryCome, $this->tb_personaesame, "cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			$confronto=$quantiGiornalieri/2;
+			
+			//echo "quanti".$quanti;
+			//echo "quantigiornalieri".$quantiGiornalieri;
+			//echo "confronto".$confronto;
+			
+			if(($quantiGiornalieri%2)!=0){$confronto--;}
+			if($quanti<$confronto){
+				$this->update("seMattina","1",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			}else{
+				$this->update("seMattina","0",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			}
 			return (true);
 		}
 		return (false);
@@ -186,6 +222,14 @@ class database{
 	}
 	
 	/* LOGIN */
+    public function checkPersona($dato, $isCFnotID){
+		$sql = "SELECT * FROM {$this->tb_persona} WHERE ";
+		if($isCFnotID){$sql.="cf='{$dato}'";}
+		else{$sql.="id={$dato}";}
+        $this->executeQuery($sql);
+        if($this->getNumRowsStored() == 1){return (true);}
+        return (false);
+    }
     public function loginCheckMe($username){
         $sql = "SELECT * FROM ".$this->tb_login." WHERE utente='".$username."' LIMIT 1";
         $this->executeQuery($sql);
@@ -196,15 +240,13 @@ class database{
         echo "SELECT * FROM {$this->tb_esame} te JOIN {$this->tb_sedeprogetto} tsp ON te.codiceProgetto=tsp.codiceProgetto ORDER BY codice ASC";
         return $this->getGeneric("SELECT * FROM {$this->tb_esame} te JOIN {$this->tb_sedeprogetto} tsp ON te.codiceProgetto=tsp.codiceProgetto ORDER BY codice ASC");
  }
-     public function getSediProgettiNomi(){
-  return $this->getGeneric("SELECT * FROM {$this->tb_sedeprogetto} tsp JOIN {$this->tb_progetto} tp ON tsp.codiceProgetto=tp.codice");
- }
-    
-    public function getEsame($id){
-  $query = "SELECT tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp ON te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice WHERE te.codice={$id}";
-  $this->executeQuery($query);
-  return $this->fetchAssocStored();
- }
-    
+	public function getSediProgettiNomi(){
+		return $this->getGeneric("SELECT tsp.codiceProgetto AS codiceProgetto, tsp.codiceSede AS codiceSede, tp.nome AS nome FROM {$this->tb_sedeprogetto} tsp JOIN {$this->tb_progetto} tp ON tsp.codiceProgetto=tp.codice");
+	}
+	/*
+	public function getEsamiSediProgettiNomi(){
+		return $this->getGeneric("SELECT * FROM {$this->tb_esame} te JOIN {$this->tb_sedeprogetto} tsp JOIN {$this->tb_progetto} tp ON te.codiceSede=tsp.codiceSede AND te.codiceProgetto=tsp.codiceProgetto AND tsp.codiceProgetto=tp.codice");
+	}
+	*/
 }
 ?>

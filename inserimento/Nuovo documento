@@ -1,0 +1,32 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="print.css">
+    </head>
+    <body>
+        <table class="once" width="100%">
+              <tr><td><img src='../stemmi/logo_ue1.png'></td>
+                <td><img src='../stemmi/politiche%20sociali.jpg'></td>
+                <td><img src='../stemmi/ministi%20e%20gioventu.jpg'></td>
+            </tr>
+            <tr>
+                <td><img src='../stemmi/logo%20garanzia%20giovani_2_74x74.jpg'></td>
+                <td></td>
+                <td><img src='../stemmi/servizio%20civile.jpg'></td>
+            </tr>
+        </table>
+        <table class="tizzio" width="100%">
+            <tr><td>Cognome <?php echo strtoupper($cognome); ?></td><td>Nome <?php echo strtoupper($nome); ?></td></tr>
+            <tr><td>Data di nascita <?php echo $newformat; ?></td><td>C.F.: <?php echo strtoupper($cf); ?></td></tr>
+        </table>
+        <table class="progetto" width="100%">
+            <tr><td>Sede di <?php echo $esami['tsnome']." [".$esami['tscodice']."]"; ?></td></tr>
+            <tr><td>Progetto <?php echo $esami['tpnome']." [".$esami['tpcodice']."]"; ?></td></tr>
+            <tr><td>Data consegna: <?php echo $esami['tpedataconsegna']; ?></td><td>Data presentazione esame orale: <?php echo $esami['tedatainizio']; ?> ore <?php echo $orario; ?></td></tr>
+        </table>
+        <div class='last'>
+            <p>Sede d'esame: Via Luigi Guanella n°20 - Miano - Napoli - tel: 081 2384007</p>
+            <p>Tutte le informazioni sul sito www.avog.it<br>E-mail: serviziocivile@avog.it</p>
+        </div>
+        <a class="invisibile" href="index.php">Torna all'inserimento</a>
+    </body>
+</html>

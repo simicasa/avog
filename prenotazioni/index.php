@@ -31,22 +31,44 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 <?php
 	$prenotazioni = $db->getPrenotazioni();
 	$nprenotazioni = count($prenotazioni);
+	for($i=0;$i<$nprenotazioni;$i++){
+		$prenotazioni[$i]['tpedataconsegna'] = str_replace("-", "/", $prenotazioni[$i]['tpedataconsegna']);
+		$prenotazioni[$i]['dataEsame'] = str_replace("-", "/", $prenotazioni[$i]['dataEsame']);
+		$prenotazioni[$i]['tpedataconsegna'] = strtotime($prenotazioni[$i]['tpedataconsegna']);
+		$prenotazioni[$i]['dataEsame'] = strtotime($prenotazioni[$i]['dataEsame']);
+	}
 ?>
                         <h3>Lista Prenotazioni</h3>
 						<table style="width:100%;">
 						<tr>
 						<td>Codice Fiscale</td>
-						<td>Codice Esame</td>
+						<td>Nome</td>
+						<td>Cognome</td>
+						<td>Data Consegna</td>
+						<td>Progetto</td>
+						<td>Sede</td>
 						<td>Data Esame</td>
+						<td>Orario</td>
 						</tr>
 						<?php
 							for($i=0;$i<$nprenotazioni;$i++){
 								echo "<tr><td>";
 								echo $prenotazioni[$i]['cf'];
 								echo "</td><td>";
-								echo $prenotazioni[$i]['codiceEsame'];
+								echo $prenotazioni[$i]['nome'];
 								echo "</td><td>";
-								echo $prenotazioni[$i]['dataEsame'];
+								echo $prenotazioni[$i]['cognome'];
+								echo "</td><td>";
+								echo date("d/m/Y",$prenotazioni[$i]['tpedataconsegna']);
+								echo "</td><td>";
+								echo $prenotazioni[$i]['tpnome'];
+								echo "</td><td>";
+								echo $prenotazioni[$i]['tsnome'];
+								echo "</td><td>";
+								echo date("d/m/Y",$prenotazioni[$i]['dataEsame']);
+								echo "</td><td>";
+								if(intval($prenotazioni[$i]['semattina'])==0){echo "Pomeriggio";}
+								else{echo "Mattina";}
 								echo "</td></tr>";
 							}
 						?>

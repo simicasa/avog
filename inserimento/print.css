@@ -1,6 +1,39 @@
-            table {
-                page-break-inside: avoid;
-            }
-.invisibile{
-    display: none;
+@media print{
+    @page {
+        size: landscape;
+        margin: 20mm 60mm;
+    }
+    .invisibile{
+        display: none;
+    }
+}
+*{
+    font-size: 13px;
+}
+.once{
+    text-align: center;
+    border:1px solid #000;
+}
+img{
+    width: auto;
+    height: 60px;
+}
+.once td{
+    width: 33%;
+    padding: 5px;
+}
+.tizzio , .progetto , .last{
+    border: 1px solid #000;
+    border-top: none; 
+}
+.tizzio td , .progetto td{
+    width: 50%;
+    padding: 10px 5px;
+}
+.last{
+    text-align: center;
+}
+.last p:first-child{
+    margin-top: 0px;
+    padding-top: 5px;
 }
