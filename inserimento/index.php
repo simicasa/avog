@@ -65,7 +65,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 									$newCodice = $esami[$i]['codiceProgetto'];
 									if(strcmp($oldCodice, $newCodice)!=0){
 										$oldCodice = $esami[$i]['codiceProgetto'];
-										echo "<optgroup label='[{$esami[$i]['codiceProgetto']}] {$esami[$i]['progettoNome']}'>";
+										echo "<optgroup label=\"[{$esami[$i]['codiceProgetto']}] {$esami[$i]['progettoNome']}\">";
 									}
 									echo "<option value='".$esami[$i]['codice']."'>[{$esami[$i]['codiceSede']}] ".$esami[$i]['sedeNome']." [".date("d/m/Y",$esami[$i]['dataInizio'])."] [";
 									if(!empty($arrayContoEsami[intval($esami[$i]['codice'])])){echo $arrayContoEsami[intval($esami[$i]['codice'])];}else{echo "0";}
