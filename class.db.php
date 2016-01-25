@@ -183,19 +183,21 @@ class database{
 				$query = "SELECT dataInizio FROM ".$this->tb_esame." WHERE codice=".$codiceEsame;
 				$this->executeQuery($query);
 				$esame = $this->fetchAssocStored();
-				//if($this->isWeekend($giorni[$i]['dataInizio'])){date('Y-m-d', strtotime($day . " +7 days"));}
-				//if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('Y-m-d', strtotime($esame['dataInizio'] . " +2 days"));}
-				//else{ $dataInizio = $esame['dataInizio']; }
 				$queryCome="DATE_ADD('".$esame['dataInizio']."', INTERVAL 0 DAY)";
 				$quanti=0;
 			}else{
+				
+				//if($this->isWeekend($giorni[$i]['dataInizio'])){date('d/m/Y', strtotime($day . " +7 days"));}
+				//if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('d/m/Y', strtotime($esame['dataInizio'] . " +2 days"));}
+				//else{ $dataInizio = $esame['dataInizio']; }
+				//$dataInizio = date('d/m/Y', strtotime($giorni[$i]['dataInizio'] . " +2 days"));
+				
 				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
-				//$dataInizio = date('Y-m-d', strtotime($giorni[$i]['dataInizio'] . " +2 days"));
 				if(!isset($giorni[$i]['quanti'])){
-					//if($this->isWeekend(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"))){$j=$i+2;}
-					//else{$j=$i;}
+					if($this->isWeekend(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"))){$j=$i+2;}
+					else{$j=$i;}
 					$i--;
-					//$j--;
+					$j--;
 					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".($j+1)." DAY)";
 					$quanti=0;
 				}else{
@@ -216,15 +218,9 @@ class database{
 		return (false);
 	}
 	public function isWeekend($date){
-		$date = strtotime($date);
-		$date = date("l", $date);
-		$date = strtolower($date);
-		echo $date;
-		if($date == "saturday" || $date == "sunday") {
-			return "true";
-		} else {
-			return "false";
-		}
+		//$weekDay = date('w', strtotime($date));
+		$weekDay = date('w', $date);
+		return ($weekDay == 0 || $weekDay == 6);
 	}
 	public function quantiEsaminandiGiornalieri(){
 		$opzioni = $this->getOpzioni();
