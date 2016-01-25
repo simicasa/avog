@@ -41,6 +41,8 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 	else{$orario=$opzioni[0]['orarioPomeriggio'];}
 	$esami['tedatainizio']=str_replace("-", "/", $esami['tedatainizio']);
 	$esami['tpedataconsegna']=str_replace("-", "/", $esami['tpedataconsegna']);
+	$esami['dataEsame']=str_replace("-", "/", $esami['dataEsame']);
+	$esami['dataEsame']=strtotime($esami['dataEsame']);
 	$esami['tedatainizio']=strtotime($esami['tedatainizio']);
 	$esami['tpedataconsegna']=strtotime($esami['tpedataconsegna']);
 ?>
@@ -70,7 +72,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
         <table class="progetto" width="100%">
             <tr><td>Sede di <?php echo $esami['tscodice']. " " . $esami['tsnome']; ?></td></tr>
             <tr><td>Progetto <?php echo $esami['tpnome']; ?></td></tr>
-			<tr><td>Data consegna: <?php echo date("d/m/Y",$esami['tpedataconsegna']); ?></td><td>Data presentazione esame orale: <?php echo date("d/m/Y",$esami['tedatainizio']); ?> ore <?php echo $orario; ?></td></tr>
+			<tr><td>Data consegna: <?php echo date("d/m/Y",$esami['tpedataconsegna']); ?></td><td>Data presentazione esame orale: <?php echo date("d/m/Y",$esami['dataEsame']); ?> ore <?php echo $orario; ?></td></tr>
         </table>
         <div class='last'>
             <p>Sede d'esame: Via Luigi Guanella N&#42; 20 - Miano - Napoli - tel: 081 2384007</p>

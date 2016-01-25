@@ -137,7 +137,7 @@ class database{
 		return $this->fetchAssocStored();
 	}
 	public function getEsamePersonaByID($id, $idPersona){
-		$query = "SELECT tpe.protocollo AS protocollo, tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON tpe.cf=tpp.cf AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.codiceEsame={$id} WHERE te.codice={$id} AND tpp.id={$idPersona}";
+		$query = "SELECT tpe.protocollo AS protocollo, tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome, tpe.dataEsame AS dataEsame FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON tpe.cf=tpp.cf AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.codiceEsame={$id} WHERE te.codice={$id} AND tpp.id={$idPersona}";
 		$this->executeQuery($query);
 		return $this->fetchAssocStored();
 	}
@@ -194,7 +194,19 @@ class database{
 				
 				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
 				if(!isset($giorni[$i]['quanti'])){
-					if($this->isWeekend(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"))){$j=$i+2;}
+					//var_dump(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"));
+					/*
+					strtotime()
+					date( strtotime( "2009-01-31 +1 month" ) );
+					var_dump(strtotime(now() . " +{$i} days"));
+					*/
+					/*
+					var_dump($i);
+					var_dump($giorni[$i-1]['dataInizio']);
+					var_dump(date("Y-m-d", strtotime($giorni[$i-1]['dataInizio'] . " +{$i} days")));
+					var_dump($this->isWeekend(date("Y-m-d", strtotime($giorni[$i-1]['dataInizio'] . " +{$i} days"))));
+					*/
+					if($this->isWeekend(date("Y-m-d", strtotime($giorni[$i-1]['dataInizio'] . " +{$i} days")))){$j=$i+2;}
 					else{$j=$i;}
 					$i--;
 					$j--;
@@ -219,7 +231,7 @@ class database{
 	}
 	public function isWeekend($date){
 		//$weekDay = date('w', strtotime($date));
-		$weekDay = date('w', $date);
+		$weekDay = date('w', strtotime($date));
 		return ($weekDay == 0 || $weekDay == 6);
 	}
 	public function quantiEsaminandiGiornalieri(){
