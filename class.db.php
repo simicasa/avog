@@ -27,10 +27,10 @@ class database{
 	
 	/* COSTRUTTORE E DISTRUTTORE */
 	public function __construct(){
-		$this->dbHost = "62.149.150.178";
-		$this->dbUser = "Sql935096";
-		$this->dbPwd = "eneaz3t7nm";
-		$this->dbNome = "Sql935096_1";
+		$this->dbHost = "localhost";
+		$this->dbUser = "angelotm";
+		$this->dbPwd = "olegnatm";
+		$this->dbNome = "lavoro1";
 		if(!($this->connetti())){ // NON CONNESSO
 			echo "<script type=\"text/javascript\">alert(\"Errore nella connessione al database, contattare un amministratore.\");</script>";
 		}
@@ -91,7 +91,7 @@ class database{
 	public function getNumFieldsStored(){return (mysql_num_fields($this->lastResult));}
 	
 	/* GET FROM DATABASE */
-	private $orderby = "ORDER BY codice ASC , nome ASC";
+	private $orderby = "ORDER BY nome ASC, codice ASC";
 	public function getGeneric($query){
 		$this->executeQuery($query);
 		$rows = $this->getNumRowsStored();
@@ -131,11 +131,7 @@ class database{
 		return $this->fetchAssocStored();
 	}
 	public function getEsamePersonaByID($id, $idPersona){
-<<<<<<< HEAD
 		$query = "SELECT tpe.protocollo AS protocollo, tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON tpe.cf=tpp.cf AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.codiceEsame={$id} WHERE te.codice={$id} AND tpp.id={$idPersona}";
-=======
-		$query = "SELECT tpe.seMattina AS semattina, tpe.dataConsegna AS tpedataconsegna, te.dataInizio AS tedatainizio, tp.codice AS tpcodice, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON tpe.cf=tpp.cf AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.codiceEsame={$id} WHERE te.codice={$id} AND tpp.id={$idPersona}";
->>>>>>> 8966459e9bb18ae28962b2897f22f51c8eba5d73
 		$this->executeQuery($query);
 		return $this->fetchAssocStored();
 	}
@@ -252,10 +248,6 @@ class database{
 			}
 		}
 	}
-		return (mysql_real_escape_string($str));
-	}
-	
-	/* LOGIN */
     public function checkPersona($dato, $isCFnotID){
 		$sql = "SELECT * FROM {$this->tb_persona} WHERE ";
 		if($isCFnotID){$sql.="cf='{$dato}'";}
