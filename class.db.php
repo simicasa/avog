@@ -183,13 +183,20 @@ class database{
 				$query = "SELECT dataInizio FROM ".$this->tb_esame." WHERE codice=".$codiceEsame;
 				$this->executeQuery($query);
 				$esame = $this->fetchAssocStored();
-				$queryCome="DATE_ADD('".$esame['dataInizio']."', INTERVAL 0 DAY)";
+				//if($this->isWeekend($giorni[$i]['dataInizio'])){date('Y-m-d', strtotime($day . " +7 days"));}
+				if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('Y-m-d', strtotime($esame['dataInizio'] . " +2 days"));}
+				else{ $dataInizio = $esame['dataInizio']; }
+				$queryCome="DATE_ADD('".$dataInizio."', INTERVAL 0 DAY)";
 				$quanti=0;
 			}else{
 				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
+				$dataInizio = date('Y-m-d', strtotime($giorni[$i]['dataInizio'] . " +2 days"));
 				if(!isset($giorni[$i]['quanti'])){
+					if($this->isWeekend(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"))){$j=$i+2;}
+					else{$j=$i;}
 					$i--;
-					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".($i+1)." DAY)";
+					$j--;
+					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".($j+1)." DAY)";
 					$quanti=0;
 				}else{
 					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".$i." DAY)";
@@ -198,11 +205,6 @@ class database{
 			}
 			$this->update("dataEsame", $queryCome, $this->tb_personaesame, "cf='".$cf."' AND codiceEsame=".$codiceEsame);
 			$confronto=$quantiGiornalieri/2;
-			
-			//echo "quanti".$quanti;
-			//echo "quantigiornalieri".$quantiGiornalieri;
-			//echo "confronto".$confronto;
-			
 			if(($quantiGiornalieri%2)!=0){$confronto--;}
 			if($quanti<$confronto){
 				$this->update("seMattina","1",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
@@ -212,6 +214,17 @@ class database{
 			return (true);
 		}
 		return (false);
+	}
+	public function isWeekend($date){
+		$date = strtotime($date);
+		$date = date("l", $date);
+		$date = strtolower($date);
+		echo $date;
+		if($date == "saturday" || $date == "sunday") {
+			return "true";
+		} else {
+			return "false";
+		}
 	}
 	public function quantiEsaminandiGiornalieri(){
 		$opzioni = $this->getOpzioni();
