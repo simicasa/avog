@@ -73,6 +73,10 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 									if(strcmp($oldCodice, $newCodice)!=0){
 										echo "</optgroup>";
 									}
+								for($i=0;$i<$nesami;$i++){
+echo "<option value='[".$esami[$i]['codice']."] [Cod.Sede ".$esami[$i]['codiceSede']."] [Cod.Progetto ".$esami[$i]['codiceProgetto']."]'>[Sede ".$esami[$i]['sedeNome']."] Progetto ".$esami[$i]['progettoNome']." [".date("d/m/Y",$esami[$i]['dataInizio'])."] [";
+if(!empty($arrayContoEsami[intval($esami[$i]['codice'])])){echo $arrayContoEsami[intval($esami[$i]['codice'])];}else{echo "0";}
+echo "/".$esami[$i]['limitePartecipanti']." Partecipanti]</option>";
 								}
 							  ?>
 							  </select>

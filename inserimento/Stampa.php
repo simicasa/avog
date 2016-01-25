@@ -46,21 +46,36 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 ?>
 <html>
     <head>
-        <style>
-        @page{size: 210mm 297mm; margin: 30mm;}
-        </style>
-        <link rel="stylesheet" type="text/css" href="print.css" media="print">
+        <link rel="stylesheet" type="text/css" href="print.css">
     </head>
     <body>
-        <table style="width:100%;">
-            <tr><td>Loghi</td></tr>
-            <tr><td>Protocollo <?php echo $esami['protocollo']; ?></td></tr>
+        <table class="once" width="100%">
+              <tr><td><img src='../stemmi/logo_ue1.png'></td>
+                <td><img src='../stemmi/politiche%20sociali.jpg'></td>
+                <td><img src='../stemmi/ministi%20e%20gioventu.jpg'></td>
+            </tr>
+            <tr>
+                <td><img src='../stemmi/logo%20garanzia%20giovani_2_74x74.jpg'></td>
+                <td></td>
+                <td><img src='../stemmi/servizio%20civile.jpg'></td>
+            </tr>
+            <tr>
+                <td>Protocollo N&#42;: <?php echo $esami['protocollo']; ?></td><td></td><td></td>
+            </tr>
+        </table>
+        <table class="tizzio" width="100%">
             <tr><td>Cognome <?php echo strtoupper($cognome); ?></td><td>Nome <?php echo strtoupper($nome); ?></td></tr>
             <tr><td>Data di nascita <?php echo $db->pulisciStringa($_POST['DataNascita']); ?></td><td>C.F.: <?php echo strtoupper($cf); ?></td></tr>
-            <tr><td>Sede di <?php echo $esami['tsnome']." [".$esami['tscodice']."]"; ?></td></tr>
-            <tr><td>Progetto <?php echo $esami['tpnome']." [".$esami['tpcodice']."]"; ?></td></tr>
-            <tr><td>Data consegna: <?php echo date("d/m/Y",$esami['tpedataconsegna']); ?></td><td>Data presentazione esame orale: <?php echo date("d/m/Y",$esami['tedatainizio']); ?> ore <?php echo $orario; ?></td></tr>
         </table>
-        <a class=".invisibile" href="index.php">Torna all'inserimento</a>
+        <table class="progetto" width="100%">
+            <tr><td>Sede di <?php echo $esami['tscodice']. " " . $esami['tsnome']; ?></td></tr>
+            <tr><td>Progetto <?php echo $esami['tpnome']; ?></td></tr>
+			<tr><td>Data consegna: <?php echo date("d/m/Y",$esami['tpedataconsegna']); ?></td><td>Data presentazione esame orale: <?php echo date("d/m/Y",$esami['tedatainizio']); ?> ore <?php echo $orario; ?></td></tr>
+        </table>
+        <div class='last'>
+            <p>Sede d'esame: Via Luigi Guanella N&#42; 20 - Miano - Napoli - tel: 081 2384007</p>
+            <p>Tutte le informazioni sul sito www.avog.it<br>E-mail: serviziocivile@avog.it</p>
+        </div>
+        <a class="invisibile" href="index.php">Torna all'inserimento</a>
     </body>
 </html>

@@ -1,0 +1,26 @@
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="print.css" media="print">
+    </head>
+    <body>
+        <table style='border:1px solid #000' style="width:100%;">
+            <tr><td width='33%'><img src='/amministrazione/stemmi/logo_ue.png' heigth='50px'></td>
+                <td  width='33%'><img src='/amministrazione/stemmi/politiche%20sociali.jpg' heigth='50px'</td>
+                <td  width='33%'><img src='/amministrazione/stemmi/ministi%20e%20gioventu.jpg' heigth='50px'></td>
+            </tr>
+            <tr>
+                <td><img src='/amministrazione/stemmi/logo%20garanzia%20giovani_2_74x74.jpg' heigth='50px'></td>
+                <td></td>
+                <td><img src='/amministrazione/stemmi/servizio%20civile.jpg' heigth='50px'></td>
+            </tr>
+        </table>
+        <table width="100%">
+            <tr><td>Cognome <?php echo strtoupper($cognome); ?></td><td>Nome <?php echo strtoupper($nome); ?></td></tr>
+            <tr><td>Data di nascita <?php echo $newformat; ?></td><td>C.F.: <?php echo strtoupper($cf); ?></td></tr>
+            <tr><td>Sede di <?php echo $esami['tsnome']." [".$esami['tscodice']."]"; ?></td></tr>
+            <tr><td>Progetto <?php echo $esami['tpnome']." [".$esami['tpcodice']."]"; ?></td></tr>
+            <tr><td>Data consegna: <?php echo $esami['tpedataconsegna']; ?></td><td>Data presentazione esame orale: <?php echo $esami['tedatainizio']; ?> ore <?php echo $orario; ?></td></tr>
+        </table>
+        <a class="invisibile" href="index.php">Torna all'inserimento</a>
+    </body>
+</html>
