@@ -52,7 +52,9 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 						<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Nascondi Menu</a>
                         <h1>Avog</h1>
                         <p>made by <code>#angelotm</code>,<code>#Simicasa</code>,<code>#VincyN90</code></p>
-                        
+						<?php
+							//$db->calcolaDataEsame("gg",7);
+						?>
                     </div>
                 </div>
             </div>

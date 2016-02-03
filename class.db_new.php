@@ -27,16 +27,16 @@ class database{
 	
 	/* COSTRUTTORE E DISTRUTTORE */
 	public function __construct(){
+		/*
 		$this->dbHost = "62.149.150.178";
 		$this->dbUser = "Sql935096";
 		$this->dbPwd = "eneaz3t7nm";
 		$this->dbNome = "Sql935096_1";
-		/*
+		*/
 		$this->dbHost = "localhost";
 		$this->dbUser = "angelotm";
 		$this->dbPwd = "olegnatm";
 		$this->dbNome = "lavoro1";
-		*/
 		if(!($this->connetti())){ // NON CONNESSO
 			echo "<script type=\"text/javascript\">alert(\"Errore nella connessione al database, contattare un amministratore.\");</script>";
 		}
@@ -170,10 +170,180 @@ class database{
 	}
 	
 	public function calcolaDataEsame($cf, $codiceEsame){
-		$queryCome="DATE_ADD('2016-02-16', INTERVAL 0 DAY)";
-		$this->update("dataEsame", $queryCome, $this->tb_personaesame, "cf='".$cf."' AND codiceEsame=".$codiceEsame);
-		$this->update("seMattina","0",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
-		return (true);
+		/*
+		$query = "
+			SELECT COUNT(*) AS quanti, dataEsame
+			FROM {$this->tb_personaesame}
+			WHERE
+				dataEsame IS NOT NULL
+				AND dataEsame > (SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame})
+				AND dataEsame > NOW()
+			GROUP BY tpe.dataEsame
+			ORDER BY tpe.dataEsame DESC
+			LIMIT 1
+		";
+		*/
+		$quantiGiornalieri = $this->quantiEsaminandiGiornalieri();
+		$query = "SELECT DATE_FORMAT(GREATEST((SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}), NOW()), '%Y-%m-%d') AS dataEsame";
+		/*$query = "
+			SELECT
+				dataInizio
+				GREATEST(
+					dataInizio,
+					IFNULL((SELECT GREATEST(dataEsame) FROM {$this->tb_personaesame} WHERE codiceEsame={$codiceEsame}), dataInizio)
+				) AS dataPrevista
+			FROM {$this->tb_esame}
+			WHERE codice={$codiceEsame}
+		";*/
+		
+		
+		
+		
+		//$query = "SELECT GREATEST(dataInizio, IFNULL((SELECT MAX(dataEsame) FROM persona_esame WHERE codiceEsame=7), dataInizio)) AS dataPrevista FROM esame WHERE codice=7";
+		$query = "SELECT GREATEST(dataInizio, IFNULL((SELECT MAX(dataEsame) FROM {$this->tb_personaesame} WHERE codiceEsame={$codiceEsame}), dataInizio)) AS dataPrevista FROM {$this->tb_esame} WHERE codice={$codiceEsame}";
+		$this->executeQuery($query);
+		$rows = $this->getNumRowsStored();
+		if($rows!=false || $rows==0){
+			for($i=0;$i<$rows;$i++){
+				$res[$i] = $this->fetchAssocStored();
+			}
+			$dataEsamePrevista = $res[0]['dataPrevista'];
+			//$query = "SELECT dataEsame, COUNT(*) AS conto, CASE WHEN COUNT(*)<2 THEN 1 ELSE 0 END AS libero FROM persona_esame WHERE dataEsame>='2016-02-16' GROUP BY dataEsame ORDER BY dataEsame ASC";
+			$query = "SELECT dataEsame, COUNT(*) AS conto, CASE WHEN COUNT(*)<{$quantiGiornalieri} THEN 1 ELSE 0 END AS libero FROM persona_esame WHERE dataEsame>={$dataEsamePrevista} GROUP BY dataEsame ORDER BY dataEsame ASC";
+			
+			$this->executeQuery($query);
+			$rows = $this->getNumRowsStored();
+			if($rows!=false || $rows==0){
+				for($i=0;$i<$rows;$i++){
+					$res[$i] = $this->fetchAssocStored();
+				}
+				if($rows==0){
+					if($this->isWeekend(date("Y-m-d", strtotime($dataEsamePrevista . " +1 days"))))
+				}else{
+					$dataEsamePrevista = $res[0]['dataEsame'];
+				}
+			}
+		}
+		/*
+		DATE_ADD(
+			(SELECT GREATEST(dataInizio, IFNULL((SELECT MAX(dataEsame) FROM persona_esame WHERE codiceEsame=7), dataInizio)) AS dataPrevista FROM esame WHERE codice=7)
+		, INTERVAL 1 DAY)
+		*/
+		
+		
+		
+		
+		
+		
+		$query = "SELECT COUNT(*) AS quanti, dataEsame FROM {$this->tb_personaesame} WHERE dataEsame IS NOT NULL AND dataEsame > (SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}) AND dataEsame > NOW() GROUP BY dataEsame ORDER BY dataEsame DESC LIMIT 1";
+		echo $query;
+		$this->executeQuery($query);
+		$rows = $this->getNumRowsStored();
+		if($rows!=false || $rows==0){
+			for($i=0;$i<$rows;$i++){
+				$res[$i] = $this->fetchAssocStored();
+			}
+			if($rows==0){
+				$query = "SELECT DATE_FORMAT(GREATEST((SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}), NOW()), '%Y-%m-%d') AS dataEsame";
+				$this->executeQuery($query);
+				$rows = $this->getNumRowsStored();
+				$res[0] = $this->fetchAssocStored();
+				$quanti=0;
+			}else{
+				$quanti = $res[0]['quanti'];
+			}
+			$dataEsamePrevista = $res[0]['dataEsame'];
+			/*
+			$arr = array(
+				"quanti " => $quanti,
+				"dataEsamePrevista " => $dataEsamePrevista,
+				"quantiGiornalieri " => $quantiGiornalieri
+			);
+			print_r($arr);
+			*/
+			if($quanti<$quantiGiornalieri){
+				//echo "dataEsame = {$dataEsamePrevista}";
+				//$queryCome="DATE_ADD('{$dataEsamePrevista}', INTERVAL 0 DAY)";
+				$intervalDays = 0;
+			}else{
+				if($this->isWeekend(date("Y-m-d", strtotime($dataEsamePrevista . " +1 days")))){
+					//echo "dataEsame = ".date("Y-m-d", strtotime($dataEsamePrevista . " +3 days"));
+					//$queryCome="DATE_ADD('{$dataEsamePrevista}', INTERVAL 3 DAY)";
+					$intervalDays = 3;
+				}else{
+					//echo "dataEsame = ".date("Y-m-d", strtotime($dataEsamePrevista . " +1 days"));
+					//$queryCome="DATE_ADD('{$dataEsamePrevista}', INTERVAL 1 DAY)";
+					$intervalDays = 1;
+				}
+			}
+			$queryCome="DATE_ADD('{$dataEsamePrevista}', INTERVAL {$intervalDays} DAY)";
+			$this->update("dataEsame", $queryCome, $this->tb_personaesame, "cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			if($quanti<$this->quantiEsaminandiMattina()){
+				$this->update("seMattina","1",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			}else{
+				$this->update("seMattina","0",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			}
+			return (true);
+		}
+		return (false);
+		/*
+		$query = "SELECT te.limitePartecipanti, te.dataInizio, COUNT(*) AS quanti, tpe.dataEsame FROM ".$this->tb_personaesame." tpe JOIN ".$this->tb_esame." te ON tpe.codiceEsame=te.codice WHERE tpe.codiceEsame=".$codiceEsame." AND dataEsame IS NOT NULL GROUP BY tpe.dataEsame ORDER BY tpe.dataEsame ASC";
+		$this->executeQuery($query);
+		$rows = $this->getNumRowsStored();
+		if($rows!=false || $rows==0){
+			for($i=0;$i<$rows;$i++){
+				$giorni[$i] = $this->fetchAssocStored();
+			}
+			$i=0;
+			$quantiGiornalieri = $this->quantiEsaminandiGiornalieri();
+			if($rows==0){
+				$query = "SELECT dataInizio FROM ".$this->tb_esame." WHERE codice=".$codiceEsame;
+				$this->executeQuery($query);
+				$esame = $this->fetchAssocStored();
+				$queryCome="DATE_ADD('".$esame['dataInizio']."', INTERVAL 0 DAY)";
+				$quanti=0;
+			}else{
+				//if($this->isWeekend($giorni[$i]['dataInizio'])){date('d/m/Y', strtotime($day . " +7 days"));}
+				//if($this->isWeekend($esame['dataInizio'])){$dataInizio = date('d/m/Y', strtotime($esame['dataInizio'] . " +2 days"));}
+				//else{ $dataInizio = $esame['dataInizio']; }
+				//$dataInizio = date('d/m/Y', strtotime($giorni[$i]['dataInizio'] . " +2 days"));
+				
+				while(isset($giorni[$i]['quanti']) && $giorni[$i]['quanti']>=$quantiGiornalieri){$i++;}
+				if(!isset($giorni[$i]['quanti'])){
+					//var_dump(strtotime($giorni[$i]['dataInizio'] . " +{$i} days"));
+					
+					//strtotime()
+					//date( strtotime( "2009-01-31 +1 month" ) );
+					//var_dump(strtotime(now() . " +{$i} days"));
+					
+					//var_dump($i);
+					//var_dump($giorni[$i-1]['dataInizio']);
+					//var_dump(date("Y-m-d", strtotime($giorni[$i-1]['dataInizio'] . " +{$i} days")));
+					//var_dump($this->isWeekend(date("Y-m-d", strtotime($giorni[$i-1]['dataInizio'] . " +{$i} days"))));
+					
+					if($this->isWeekend(date("Y-m-d", strtotime($giorni[$i-1]['dataInizio'] . " +{$i} days")))){$j=$i+2;}
+					else{$j=$i;}
+					$i--;
+					$j--;
+					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".($j+1)." DAY)";
+					$quanti=0;
+				}else{
+					$queryCome="DATE_ADD('".$giorni[$i]['dataInizio']."', INTERVAL ".$i." DAY)";
+					$quanti=$giorni[$i]['quanti'];
+				}
+			}
+			$this->update("dataEsame", $queryCome, $this->tb_personaesame, "cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			//$confronto=$quantiGiornalieri/2;
+			//if(($quantiGiornalieri%2)!=0){$confronto--;}
+			if($quanti<$this->quantiEsaminandiMattina()){
+				$this->update("seMattina","1",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			}else{
+				$this->update("seMattina","0",$this->tb_personaesame,"cf='".$cf."' AND codiceEsame=".$codiceEsame);
+			}
+			return (true);
+		}
+		return (false);
+		*/
 	}
 	public function isWeekend($date){
 		//$weekDay = date('w', strtotime($date));

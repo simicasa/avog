@@ -1,8 +1,8 @@
-create table sede(codice varchar(20), nome varchar(100), unique(codice));
-alter table sede modify nome varchar(100);
+create table sede(codice varchar(100), nome varchar(100), unique(codice));
+#alter table sede modify nome varchar(100);
 
-create table progetto(codice varchar(20), nome varchar(100), primary key(codice));
-alter table progetto modify nome varchar(100);
+create table progetto(codice varchar(100), nome varchar(100), primary key(codice));
+#alter table progetto modify nome varchar(100);
 
 create table sede_progetto(codiceSede varchar(20), codiceProgetto varchar(20), posti int(4), foreign key(codiceSede) references sede(codice) on update cascade on delete cascade, foreign key(codiceProgetto) references progetto(codice) on update cascade on delete cascade, primary key(codiceSede, codiceProgetto));
 
