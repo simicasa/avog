@@ -27,16 +27,16 @@ class database{
 	
 	/* COSTRUTTORE E DISTRUTTORE */
 	public function __construct(){
+		/*
 		$this->dbHost = "62.149.150.178";
 		$this->dbUser = "Sql935096";
 		$this->dbPwd = "eneaz3t7nm";
 		$this->dbNome = "Sql935096_1";
-		/*
+		*/
 		$this->dbHost = "localhost";
 		$this->dbUser = "angelotm";
 		$this->dbPwd = "olegnatm";
 		$this->dbNome = "lavoro1";
-		*/
 		if(!($this->connetti())){ // NON CONNESSO
 			echo "<script type=\"text/javascript\">alert(\"Errore nella connessione al database, contattare un amministratore.\");</script>";
 		}
@@ -170,8 +170,9 @@ class database{
 	}
 	
 	public function calcolaDataEsame($cf, $codiceEsame){
+		$quantiGiornalieri = $this->quantiEsaminandiGiornalieri();
 		$query = "SELECT COUNT(*) AS quanti, dataEsame FROM {$this->tb_personaesame} WHERE dataEsame IS NOT NULL AND dataEsame > (SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}) AND dataEsame > NOW() GROUP BY dataEsame ORDER BY dataEsame DESC LIMIT 1";
-		echo $query;
+		//echo $query;
 		$this->executeQuery($query);
 		$rows = $this->getNumRowsStored();
 		if($rows!=false || $rows==0){
