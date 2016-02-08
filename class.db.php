@@ -27,16 +27,16 @@ class database{
 	
 	/* COSTRUTTORE E DISTRUTTORE */
 	public function __construct(){
-		/*
 		$this->dbHost = "62.149.150.178";
 		$this->dbUser = "Sql935096";
 		$this->dbPwd = "eneaz3t7nm";
 		$this->dbNome = "Sql935096_1";
-		*/
+		/*
 		$this->dbHost = "localhost";
 		$this->dbUser = "angelotm";
 		$this->dbPwd = "olegnatm";
 		$this->dbNome = "lavoro1";
+		*/
 		if(!($this->connetti())){ // NON CONNESSO
 			echo "<script type=\"text/javascript\">alert(\"Errore nella connessione al database, contattare un amministratore.\");</script>";
 		}
@@ -171,7 +171,20 @@ class database{
 	
 	public function calcolaDataEsame($cf, $codiceEsame){
 		$quantiGiornalieri = $this->quantiEsaminandiGiornalieri();
-		$query = "SELECT COUNT(*) AS quanti, dataEsame FROM {$this->tb_personaesame} WHERE dataEsame IS NOT NULL AND dataEsame > (SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}) AND dataEsame > NOW() GROUP BY dataEsame ORDER BY dataEsame DESC LIMIT 1";
+		$query = "SELECT COUNT(*) AS quanti, dataEsame FROM {$this->tb_personaesame} WHERE dataEsame IS NOT NULL AND dataEsame > (SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}) AND dataEsame > DATE_ADD(NOW(), INTERVAL -1 DAY) GROUP BY dataEsame HAVING quanti<{$quantiGiornalieri} ORDER BY dataEsame asc";
+        /*
+		$query = "
+            SELECT COUNT(*) AS quanti, dataEsame
+            FROM persona_esame
+            WHERE
+                dataEsame IS NOT NULL
+                AND dataEsame > (SELECT dataInizio FROM esame WHERE codice=7)
+                AND dataEsame > DATE_ADD(NOW(), INTERVAL -1 DAY)
+            GROUP BY dataEsame
+            HAVING quanti<2
+            ORDER BY dataEsame asc
+        ";
+        */
 		//echo $query;
 		$this->executeQuery($query);
 		$rows = $this->getNumRowsStored();
@@ -180,15 +193,35 @@ class database{
 				$res[$i] = $this->fetchAssocStored();
 			}
 			if($rows==0){
-				$query = "SELECT DATE_FORMAT(GREATEST((SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}), NOW()), '%Y-%m-%d') AS dataEsame";
+                $query = "SELECT COUNT(*) AS quanti, dataEsame FROM {$this->tb_personaesame} WHERE dataEsame IS NOT NULL AND dataEsame > (SELECT dataInizio FROM {$this->tb_esame} WHERE codice={$codiceEsame}) AND dataEsame > DATE_ADD(NOW(), INTERVAL -1 DAY) GROUP BY dataEsame ORDER BY dataEsame DESC LIMIT 1";
+                /*
+                $query = "
+                    SELECT COUNT(*) AS quanti, dataEsame
+                    FROM persona_esame
+                    WHERE
+                        dataEsame IS NOT NULL
+                        AND dataEsame > (SELECT dataInizio FROM esame WHERE codice=7)
+                        AND dataEsame > DATE_ADD(NOW(), INTERVAL -1 DAY)
+                    GROUP BY dataEsame
+                    ORDER BY dataEsame DESC LIMIT 1
+                ";
+                */
 				$this->executeQuery($query);
 				$rows = $this->getNumRowsStored();
+                if($rows==0){
+                    $query = "SELECT DATE_FORMAT(GREATEST((SELECT dataInizio FROM {$this->tb_esame} AS dataEsame WHERE codice={$codiceEsame}), NOW()), '%Y-%m-%d') AS dataEsame";
+                    $this->executeQuery($query);
+				    $rows = $this->getNumRowsStored();
+				    $quanti=0;
+                }
 				$res[0] = $this->fetchAssocStored();
-				$quanti=0;
-			}else{
-				$quanti = $res[0]['quanti'];
 			}
+            //else{}
+            if(!isset($quanti)){
+                $quanti = $res[0]['quanti'];
+            }
 			$dataEsamePrevista = $res[0]['dataEsame'];
+            
 			/*
 			$arr = array(
 				"quanti " => $quanti,
@@ -196,7 +229,8 @@ class database{
 				"quantiGiornalieri " => $quantiGiornalieri
 			);
 			print_r($arr);
-			*/
+            */
+                
 			if($quanti<$quantiGiornalieri){
 				//echo "dataEsame = {$dataEsamePrevista}";
 				//$queryCome="DATE_ADD('{$dataEsamePrevista}', INTERVAL 0 DAY)";
