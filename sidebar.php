@@ -2,8 +2,8 @@
             <ul class="sidebar-nav">
                 <li class="sidebar-brand"><a>Avog</a></li>
 <?php
-$names = array('Home', 'Inserimento', 'Prenotazioni', 'Gestione Sedi', 'Gestione Progetti', 'Gestione Esami', 'Gestione Persone', 'Opzioni', 'Logout');
-$links = array('#', 'inserimento/', 'prenotazioni/', 'sedi/', 'progetti/', 'esami/', 'persone/', 'opzioni/', 'logout/');
+$names = array('Home', 'Inserimento', 'Prenotazioni', 'Stampe', 'Gestione Sedi', 'Gestione Progetti', 'Gestione Esami', 'Gestione Persone', 'Opzioni', 'Logout');
+$links = array('#', 'inserimento/', 'prenotazioni/', 'stampe/', 'sedi/', 'progetti/', 'esami/', 'persone/', 'opzioni/', 'logout/');
 
 for($i=0;$i<count($names);$i++){
 ?>
