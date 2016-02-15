@@ -164,7 +164,7 @@ class database{
 	}
 	public function getPrenotazioniDate($dd, $mm, $yy, $projectID){
         $data = "{$yy}-{$mm}-{$dd}";
-		$query = "SELECT tpe.protocollo AS protocollo, tpp.cf AS cf, tpp.nome AS nome, tpp.cognome AS cognome, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON te.codice=tpe.codiceEsame AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.personaID=tpp.id WHERE tpe.dataEsame='{$data}' ORDER BY ts.codice ASC";
+		$query = "SELECT tpe.protocollo AS protocollo, tpp.cf AS cf, tpp.nome AS nome, tpp.cognome AS cognome, tp.nome AS tpnome, ts.codice AS tscodice, ts.nome AS tsnome FROM {$this->tb_esame} te JOIN {$this->tb_sede} ts JOIN {$this->tb_progetto} tp JOIN {$this->tb_personaesame} tpe JOIN {$this->tb_persona} tpp ON te.codice=tpe.codiceEsame AND te.codiceSede=ts.codice AND te.codiceProgetto=tp.codice AND tpe.personaID=tpp.id WHERE tpe.dataEsame='{$data}' ORDER BY ts.codice ASC, tpe.protocollo ASC";
         //WHERE tpe.dataEsame='{$data}' AND tp.codice={$projectID} AND te.codiceProgetto={$projectID}
         //echo $query;
 		return $this->getGeneric($query);

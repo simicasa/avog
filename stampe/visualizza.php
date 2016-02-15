@@ -38,14 +38,14 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
     <h1>Prenotazioni <?php echo "{$giorno}/{$mese}/{$anno}"; ?></h1>
     <h2 style="padding:20px 0px;"><?php echo $progetto[0]['nome'];?></h2>
     
-    <?php
+<?php
         for($j=0; $j<$nprenotazioni; $j++) {
+            $table = false;
             if($codiceSede!=$prenotazioni[$j]['tscodice']){
                 echo "<h3>".$prenotazioni[$j]['tsnome']."</h3>";
                 $codiceSede=$prenotazioni[$j]['tscodice'];
-            }
-    ?>
-    
+                $table = true;
+?>
     <table style="width:100%;">
         <tr>
         <td width="10%">Protocollo</td>
@@ -54,7 +54,8 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
         <td width="15%">Cognome</td>
         <td width="30%">Firma</td>
         </tr>
-        <?php
+<?php
+            }
             for($i=$start;$i<$nprenotazioni;$i++){
                 if($codiceSede==$prenotazioni[$i]['tscodice']){
                     echo "<tr><td>";
@@ -68,13 +69,19 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
                     echo "</td><td>";
                     echo "&nbsp;";
                     echo "</td></tr>";
-                }else{
+                }
+                /*else{
                     $start = $i;
                 }
+                */
             }
-        ?>
+            if($table){
+?>
     </table>
-    <?php } ?>
+<?php
+            }
+        }
+?>
     <script src="../js/jquery.js"></script>
     <script src="../js/bootstrap.min.js"></script>
 </body>
