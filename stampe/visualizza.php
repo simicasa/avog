@@ -37,28 +37,33 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
 ?>
     <h1>Prenotazioni <?php echo "{$giorno}/{$mese}/{$anno}"; ?></h1>
     <h2 style="padding:20px 0px;"><?php echo $progetto[0]['nome'];?></h2>
-    
+
 <?php
+    /*
         for($j=0; $j<$nprenotazioni; $j++) {
             $table = false;
             if($codiceSede!=$prenotazioni[$j]['tscodice']){
                 echo "<h3>".$prenotazioni[$j]['tsnome']."</h3>";
                 $codiceSede=$prenotazioni[$j]['tscodice'];
                 $table = true;
+                */
 ?>
     <table style="width:100%;">
         <tr>
+        <td width="15%">Sede</td>
         <td width="10%">Protocollo</td>
-        <td width="30%">Codice Fiscale</td>
+        <td width="25%">Codice Fiscale</td>
         <td width="15%">Nome</td>
         <td width="15%">Cognome</td>
-        <td width="30%">Firma</td>
+        <td width="20%">Firma</td>
         </tr>
 <?php
-            }
+            //}
             for($i=$start;$i<$nprenotazioni;$i++){
-                if($codiceSede==$prenotazioni[$i]['tscodice']){
+                //if($codiceSede==$prenotazioni[$i]['tscodice']){
                     echo "<tr><td>";
+                    echo $prenotazioni[$i]['tsnome'];
+                    echo "</td><td>";
                     echo $prenotazioni[$i]['protocollo'];
                     echo "</td><td>";
                     echo $prenotazioni[$i]['cf'];
@@ -69,18 +74,18 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
                     echo "</td><td>";
                     echo "&nbsp;";
                     echo "</td></tr>";
-                }
+                //}
                 /*else{
                     $start = $i;
                 }
                 */
             }
-            if($table){
+            //if($table){
 ?>
     </table>
 <?php
-            }
-        }
+            //}
+        //}
 ?>
     <script src="../js/jquery.js"></script>
     <script src="../js/bootstrap.min.js"></script>
