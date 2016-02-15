@@ -39,6 +39,7 @@ if(!isset($_SESSION['loggedinas']) || empty($_SESSION['loggedinas']) || !$db->lo
     <h2 style="padding:20px 0px;"><?php echo $progetto[0]['nome'];?></h2>
 
 <?php
+    //print_r($prenotazioni);
     /*
         for($j=0; $j<$nprenotazioni; $j++) {
             $table = false;
